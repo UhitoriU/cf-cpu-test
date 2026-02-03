@@ -27,12 +27,22 @@ const app = new Hono<{ Bindings: EnvBindings }>();
 app.get("/api/", (c) => c.json({ name: "Cloudflare" }));
 
 app.get("/api/worker-cpu", (c) => {
-	const params = readCpuParams(c.req.url);
-	const result = runCpuTask(params);
-	return c.json({
-		mode: "worker",
-		...result,
-	});
+	try {
+		const params = readCpuParams(c.req.url);
+		const result = runCpuTask(params);
+		return c.json({
+			mode: "worker",
+			...result,
+		});
+	} catch (error) {
+		return c.json(
+			{
+				mode: "worker",
+				error: error instanceof Error ? error.message : String(error),
+			},
+			500
+		);
+	}
 });
 
 app.get("/api/do-cpu", async (c) => {
@@ -52,12 +62,22 @@ app.get("/api/do-cpu", async (c) => {
 
 export class CpuDurableObject {
 	async fetch(request: Request): Promise<Response> {
-		const params = readCpuParams(request.url);
-		const result = runCpuTask(params);
-		return Response.json({
-			mode: "durable-object",
-			...result,
-		});
+		try {
+			const params = readCpuParams(request.url);
+			const result = runCpuTask(params);
+			return Response.json({
+				mode: "durable-object",
+				...result,
+			});
+		} catch (error) {
+			return Response.json(
+				{
+					mode: "durable-object",
+					error: error instanceof Error ? error.message : String(error),
+				},
+				{ status: 500 }
+			);
+		}
 	}
 }
 

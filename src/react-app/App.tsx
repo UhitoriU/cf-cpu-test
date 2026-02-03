@@ -28,6 +28,13 @@ function App() {
 			});
 			const endpoint = mode === "worker" ? "/api/worker-cpu" : "/api/do-cpu";
 			const res = await fetch(`${endpoint}?${qs.toString()}`);
+			const contentType = res.headers.get("content-type") ?? "";
+			if (!res.ok || !contentType.includes("application/json")) {
+				const text = await res.text();
+				throw new Error(
+					`http=${res.status} content-type=${contentType} body=${text.slice(0, 160)}`
+				);
+			}
 			const data = await res.json();
 			const elapsed = Number((performance.now() - start).toFixed(2));
 			appendLog(
