@@ -30,11 +30,13 @@ app.get("/api/worker-cpu", (c) => {
 	try {
 		const params = readCpuParams(c.req.url);
 		const result = runCpuTask(params);
+		c.header("Cache-Control", "no-store");
 		return c.json({
 			mode: "worker",
 			...result,
 		});
 	} catch (error) {
+		c.header("Cache-Control", "no-store");
 		return c.json(
 			{
 				mode: "worker",
@@ -68,14 +70,14 @@ export class CpuDurableObject {
 			return Response.json({
 				mode: "durable-object",
 				...result,
-			});
+			}, { headers: { "Cache-Control": "no-store" } });
 		} catch (error) {
 			return Response.json(
 				{
 					mode: "durable-object",
 					error: error instanceof Error ? error.message : String(error),
 				},
-				{ status: 500 }
+				{ status: 500, headers: { "Cache-Control": "no-store" } }
 			);
 		}
 	}
@@ -101,6 +103,7 @@ function clampNumber(value: number, fallback: number, max: number): number {
 
 function runCpuTask(params: CpuParams) {
 	const startedAt = performance.now();
+	const wallStartedAt = Date.now();
 	let checksum = 0;
 
 	for (let loop = 0; loop < params.loops; loop += 1) {
@@ -110,13 +113,17 @@ function runCpuTask(params: CpuParams) {
 	}
 
 	const endedAt = performance.now();
+	const wallEndedAt = Date.now();
 
 	return {
 		params,
 		elapsedMs: endedAt - startedAt,
+		wallMs: wallEndedAt - wallStartedAt,
 		checksum,
 		startedAt,
 		endedAt,
+		wallStartedAt,
+		wallEndedAt,
 	};
 }
 

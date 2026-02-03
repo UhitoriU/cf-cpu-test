@@ -37,8 +37,17 @@ function App() {
 			}
 			const data = await res.json();
 			const elapsed = Number((performance.now() - start).toFixed(2));
+			const cpuMs =
+				typeof data.elapsedMs === "number"
+					? data.elapsedMs.toFixed(3)
+					: String(data.elapsedMs);
+			const wallMs =
+				typeof data.wallMs === "number"
+					? data.wallMs.toFixed(2)
+					: String(data.wallMs);
+			const p = data.params ?? params;
 			appendLog(
-				`${new Date().toLocaleTimeString()} | ${label} | cpu=${data.elapsedMs}ms | client=${elapsed}ms | checksum=${data.checksum}`
+				`${new Date().toLocaleTimeString()} | ${label} | cpu=${cpuMs}ms | wall=${wallMs}ms | client=${elapsed}ms | items=${p.items} itemSize=${p.itemSize} loops=${p.loops} | checksum=${data.checksum}`
 			);
 		} catch (err) {
 			appendLog(
