@@ -93,7 +93,7 @@ function runCpuTask(params: CpuParams) {
 
 	return {
 		params,
-		elapsedMs: Number((endedAt - startedAt).toFixed(2)),
+		elapsedMs: endedAt - startedAt,
 		checksum,
 		startedAt,
 		endedAt,

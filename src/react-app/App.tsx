@@ -1,19 +1,16 @@
 // src/App.tsx
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
 	const [logs, setLogs] = useState<string[]>([]);
 	const [running, setRunning] = useState<"worker" | "do" | null>(null);
-	const params = useMemo(
-		() => ({
-			items: 8000,
-			itemSize: 256,
-			loops: 6,
-		}),
-		[]
-	);
+	const [params, setParams] = useState({
+		items: 8000,
+		itemSize: 256,
+		loops: 6,
+	});
 
 	const appendLog = (entry: string) =>
 		setLogs((prev) => [entry, ...prev].slice(0, 20));
@@ -64,10 +61,53 @@ function App() {
 						运行 DO 任务
 					</button>
 				</div>
-				<p className="hint">
-					参数: items={params.items}, itemSize={params.itemSize}, loops=
-					{params.loops}
-				</p>
+				<div className="params">
+					<label>
+						items
+						<input
+							type="number"
+							min={1}
+							max={200000}
+							value={params.items}
+							onChange={(event) =>
+								setParams((prev) => ({
+									...prev,
+									items: Number(event.target.value),
+								}))
+							}
+						/>
+					</label>
+					<label>
+						itemSize
+						<input
+							type="number"
+							min={1}
+							max={2048}
+							value={params.itemSize}
+							onChange={(event) =>
+								setParams((prev) => ({
+									...prev,
+									itemSize: Number(event.target.value),
+								}))
+							}
+						/>
+					</label>
+					<label>
+						loops
+						<input
+							type="number"
+							min={1}
+							max={100}
+							value={params.loops}
+							onChange={(event) =>
+								setParams((prev) => ({
+									...prev,
+									loops: Number(event.target.value),
+								}))
+							}
+						/>
+					</label>
+				</div>
 			</section>
 			<section className="card">
 				<h2>日志</h2>
