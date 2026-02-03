@@ -51,7 +51,7 @@ app.get("/api/do-cpu", async (c) => {
 });
 
 export class CpuDurableObject {
-	constructor(private readonly state: DurableObjectState) {}
+	constructor(private readonly _state: DurableObjectState) {}
 
 	async fetch(request: Request): Promise<Response> {
 		const params = readCpuParams(request.url);
