@@ -19,7 +19,7 @@
 	"migrations": [
 		{
 			"tag": "v1",
-			"new_classes": ["CpuDurableObject"]
+			"new_sqlite_classes": ["CpuDurableObject"]
 		}
 	],
 	"assets": {
