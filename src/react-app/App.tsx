@@ -39,15 +39,21 @@ function App() {
 			const elapsed = Number((performance.now() - start).toFixed(2));
 			const cpuMs =
 				typeof data.elapsedMs === "number"
-					? data.elapsedMs.toFixed(3)
+					? data.elapsedMs.toFixed(6)
 					: String(data.elapsedMs);
 			const wallMs =
 				typeof data.wallMs === "number"
-					? data.wallMs.toFixed(2)
+					? data.wallMs.toFixed(6)
 					: String(data.wallMs);
+			const cpuUs =
+				typeof data.elapsedUs === "number"
+					? `${data.elapsedUs}us`
+					: String(data.elapsedUs);
+			const wallUs =
+				typeof data.wallUs === "number" ? `${data.wallUs}us` : String(data.wallUs);
 			const p = data.params ?? params;
 			appendLog(
-				`${new Date().toLocaleTimeString()} | ${label} | cpu=${cpuMs}ms | wall=${wallMs}ms | client=${elapsed}ms | items=${p.items} itemSize=${p.itemSize} loops=${p.loops} | checksum=${data.checksum}`
+				`${new Date().toLocaleTimeString()} | ${label} | cpu=${cpuMs}ms (${cpuUs}) | wall=${wallMs}ms (${wallUs}) | client=${elapsed}ms | items=${p.items} itemSize=${p.itemSize} loops=${p.loops} | checksum=${data.checksum}`
 			);
 		} catch (err) {
 			appendLog(

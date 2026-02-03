@@ -114,11 +114,15 @@ function runCpuTask(params: CpuParams) {
 
 	const endedAt = performance.now();
 	const wallEndedAt = Date.now();
+	const elapsedMs = endedAt - startedAt;
+	const wallMs = wallEndedAt - wallStartedAt;
 
 	return {
 		params,
-		elapsedMs: endedAt - startedAt,
-		wallMs: wallEndedAt - wallStartedAt,
+		elapsedMs,
+		wallMs,
+		elapsedUs: Math.round(elapsedMs * 1000),
+		wallUs: Math.round(wallMs * 1000),
 		checksum,
 		startedAt,
 		endedAt,
